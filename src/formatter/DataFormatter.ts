@@ -52,9 +52,9 @@ export class DataFormatter {
         {
           sql: orderInfo.sqlQueries[0].sql,
           sqlType: orderInfo.sqlQueries[0].sqlType,
-          resultsCount: productsInfo.sqlQueries[0].resultsCount,
-          timeStart: productsInfo.sqlQueries[0].timeStart,
-          timeTaken: productsInfo.sqlQueries[0].timeTaken,
+          resultsCount: orderInfo.sqlQueries[0].resultsCount,
+          timeStart: orderInfo.sqlQueries[0].timeStart,
+          timeTaken: orderInfo.sqlQueries[0].timeTaken,
         },
         {
           sql: productsInfo.sqlQueries[0].sql,
@@ -70,11 +70,13 @@ export class DataFormatter {
 
   public formatOrdersPageResponse = (ordersPage: OrderPage, sqlRecord: sqlRecord) => {
     const responseData = {
-      orderInfo: ordersPage.data,
+      data: ordersPage.data,
       sqlQueries: [
         {
           sql: ordersPage.sqlQueries[0].sql,
           sqlType: ordersPage.sqlQueries[0].sqlType,
+          timeStart: ordersPage.sqlQueries[0].timeStart,
+          timeTaken: ordersPage.sqlQueries[0].timeTaken
         },
         sqlRecord
       ],
