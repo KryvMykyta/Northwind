@@ -1,7 +1,9 @@
+import { PgRepository } from './repository/pgRepository';
 import express from 'express'
 import { itemRouter } from './routers/items';
 import { searchRouter } from './routers/search'
 import { pagesRouter } from './routers/pages';
+
 
 const app = express()
 

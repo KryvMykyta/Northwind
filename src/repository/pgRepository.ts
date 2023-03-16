@@ -1,5 +1,5 @@
 import { shippers } from './../schemas/pgSchema';
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import {
   customers,
@@ -11,26 +11,25 @@ import {
 } from "../schemas/pgSchema";
 import { sql } from "drizzle-orm/sql";
 import { eq, asc, ilike, and, gte, lt } from "drizzle-orm/expressions";
+import dotenv from "dotenv";
+dotenv.config();
 
 export class PgRepository {
   CONN_STRING: string;
+  db: NodePgDatabase;
 
   constructor(connectionString: string) {
     this.CONN_STRING = connectionString;
-  }
-
-  private init = async () => {
     const poolConnection = new Pool({
       connectionString: this.CONN_STRING,
     });
     const db = drizzle(poolConnection);
-    return db;
-  };
+    this.db = db;
+  }
 
   public getCustomerById = async (id: string) => {
     const startTime = new Date()
-    const db = await this.init();
-    const customerQuery = db
+    const customerQuery = this.db
       .select()
       .from(customers)
       .where(eq(customers.CustomerID, id));
@@ -56,8 +55,7 @@ export class PgRepository {
 
   public getEmployeeById = async (id: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const employeeQuery = db
+    const employeeQuery = this.db
       .select()
       .from(employees)
       .where(eq(employees.EmployeeID, id));
@@ -84,8 +82,7 @@ export class PgRepository {
 
   public getProductById = async (id: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const productQuery = db
+    const productQuery = this.db
       .select({
         productName: products.ProductName,
         supplierId: products.SupplierID,
@@ -122,8 +119,7 @@ export class PgRepository {
 
   public getSupplierById = async (id: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const suppliesQuery = db
+    const suppliesQuery = this.db
       .select()
       .from(supplies)
       .where(eq(supplies.SupplierID, id));
@@ -150,8 +146,7 @@ export class PgRepository {
 
   public searchCustomers = async (keyword: string) => {
     const startTime = new Date()
-    const db = await this.init();
-    const foundCustomers = db
+    const foundCustomers = this.db
       .select({
         id: customers.CustomerID,
         name: customers.CompanyName,
@@ -184,8 +179,7 @@ export class PgRepository {
 
   public searchProducts = async (keyword: string) => {
     const startTime = new Date()
-    const db = await this.init();
-    const foundProducts = db
+    const foundProducts = this.db
       .select({
         id: products.ProductID,
         name: products.ProductName,
@@ -218,8 +212,7 @@ export class PgRepository {
 
   public customersPage = async (page: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const customersQuery = db
+    const customersQuery = this.db
       .select({
         id: customers.CustomerID,
         company: customers.CompanyName,
@@ -256,8 +249,7 @@ export class PgRepository {
   public productsPage = async (page: number) => {
 
     const startTime = new Date()
-    const db = await this.init();
-    const productsQuery = db
+    const productsQuery = this.db
       .select({
         id: products.ProductID,
         name: products.ProductName,
@@ -294,8 +286,7 @@ export class PgRepository {
   public suppliersPage = async (page: number) => {
 
     const startTime = new Date()
-    const db = await this.init();
-    const suppliesQuery = db
+    const suppliesQuery = this.db
       .select({
         id: supplies.SupplierID,
         companyName: supplies.CompanyName,
@@ -327,21 +318,11 @@ export class PgRepository {
       ]
     };
 
-    return {
-      data: queryResponse,
-      sqlQueries: [
-        {
-          sql,
-          sqlType: "select where"
-        }
-      ]
-    };
   };
 
   public employeesPage = async (page: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const employeesQuery = db
+    const employeesQuery = this.db
       .select({
         id: employees.EmployeeID,
         name: sql<string>`CONCAT(${employees.FirstName}, ' ' , ${employees.LastName})`.as(
@@ -374,22 +355,11 @@ export class PgRepository {
         }
       ]
     };
-
-    return {
-      data: queryResponse,
-      sqlQueries: [
-        {
-          sql: sqlString,
-          sqlType: "select where"
-        }
-      ]
-    };
   };
 
   public getFirstOrderId = async () => {
     const startTime = new Date()
-    const db = await this.init();
-    const totalQuery = db
+    const totalQuery = this.db
       .select({ first: Orders.OrderID })
       .from(Orders)
       .limit(1)
@@ -416,8 +386,7 @@ export class PgRepository {
 
   public ordersPage = async (first: number, page: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const ordersQuery = db
+    const ordersQuery = this.db
       .select({
         TotalProductsPrice:
           sql<number>`SUM(${orderDetail.UnitPrice} * ${orderDetail.Quantity})`.as(
@@ -466,8 +435,7 @@ export class PgRepository {
 
   public getOrderById = async (id: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const orderQuery = db
+    const orderQuery = this.db
       .select({
         CustomerId: Orders.CustomerID,
         ShipName: Orders.ShipName,
@@ -535,8 +503,7 @@ export class PgRepository {
 
   public getOrderProductsById = async (id: number) => {
     const startTime = new Date()
-    const db = await this.init();
-    const orderQuery = db
+    const orderQuery = this.db
       .select({
         ProductName: products.ProductName,
         ProductId: orderDetail.ProductID,
@@ -574,3 +541,5 @@ export class PgRepository {
   
   }
 }
+
+export const repository = new PgRepository(process.env.CONN_STRING as string)

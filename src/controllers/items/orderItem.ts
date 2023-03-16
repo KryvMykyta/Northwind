@@ -1,13 +1,12 @@
 import { DataFormatter } from "../../formatter/DataFormatter";
 import { Request, Response } from "express";
-import { PgRepository } from "../../repository/pgRepository";
+import { repository } from "./../../repository/pgRepository";
 import dotenv from "dotenv";
 dotenv.config();
 
 export async function getOrder(req: Request<{ id: number }>, res: Response) {
   try {
     const id = req.params.id;
-    const repository = new PgRepository(process.env.CONN_STRING as string);
     const formatter = new DataFormatter();
 
     const rawTopOrderInfo = await repository.getOrderById(id);

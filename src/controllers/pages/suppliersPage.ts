@@ -1,6 +1,7 @@
 import { DataFormatter } from "../../formatter/DataFormatter";
 import { Request, Response } from "express";
-import { PgRepository } from "../../repository/pgRepository";
+// import { PgRepository } from "../../repository/pgRepository";
+import { repository } from "./../../repository/pgRepository";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -10,7 +11,7 @@ export async function getSuppliers(
 ) {
   try {
     const page = req.params.page;
-    const repository = new PgRepository(process.env.CONN_STRING as string);
+    // const repository = new PgRepository(process.env.CONN_STRING as string);
     const rawCustomersData = await repository.suppliersPage(page);
     const formatter = new DataFormatter();
     const formattedData = formatter.addAvatarSupplier(rawCustomersData.data);

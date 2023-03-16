@@ -1,13 +1,14 @@
 import { DataFormatter } from "../../formatter/DataFormatter";
 import { Request, Response } from "express";
-import { PgRepository } from "../../repository/pgRepository";
+// import { PgRepository } from "../../repository/pgRepository";
+import { repository } from "./../../repository/pgRepository";
 import dotenv from "dotenv";
 dotenv.config();
 
 export async function getOrders(req: Request<{ page: number }>, res: Response) {
   try {
     const page = req.params.page;
-    const repository = new PgRepository(process.env.CONN_STRING as string);
+    // const repository = new PgRepository(process.env.CONN_STRING as string);
     const formatter = new DataFormatter();
     const firstIdQuery = await repository.getFirstOrderId();
     const { data } = firstIdQuery;

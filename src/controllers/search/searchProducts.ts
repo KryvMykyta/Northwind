@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { PgRepository } from "./../../repository/pgRepository";
+// import { PgRepository } from "./../../repository/pgRepository";
+import { repository } from "./../../repository/pgRepository";
 
 export async function searchProducts(
   req: Request<{ key: string }>,
@@ -7,7 +8,7 @@ export async function searchProducts(
 ) {
   try {
     const keyword = req.params.key;
-    const repository = new PgRepository(process.env.CONN_STRING as string);
+    // const repository = new PgRepository(process.env.CONN_STRING as string);
     const rawCustomersData = await repository.searchProducts(keyword);
     return res.status(200).send(rawCustomersData);
   } catch (err) {
