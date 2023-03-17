@@ -30,7 +30,7 @@ export class PgRepository {
 
   public getCount = async (table: tables) => {
     const startTime = new Date();
-    let queryRequest, sqlString, endTime, queryResponse;
+    let queryRequest
     switch (table) {
       case "customers":
         queryRequest = this.db
@@ -38,9 +38,6 @@ export class PgRepository {
             count: sql<number>`COUNT (*)`.as("count"),
           })
           .from(customers);
-        sqlString = queryRequest.toSQL().sql;
-        queryResponse = await queryRequest;
-        endTime = new Date();
         break;
       case "employees":
         queryRequest = this.db
@@ -48,9 +45,6 @@ export class PgRepository {
             count: sql<number>`COUNT (*)`.as("count"),
           })
           .from(employees);
-        sqlString = queryRequest.toSQL().sql;
-        queryResponse = await queryRequest;
-        endTime = new Date();
         break;
       case "orders":
         queryRequest = this.db
@@ -58,9 +52,6 @@ export class PgRepository {
             count: sql<number>`COUNT (*)`.as("count"),
           })
           .from(Orders);
-        sqlString = queryRequest.toSQL().sql;
-        queryResponse = await queryRequest;
-        endTime = new Date();
         break;
       case "products":
         queryRequest = this.db
@@ -68,9 +59,6 @@ export class PgRepository {
             count: sql<number>`COUNT (*)`.as("count"),
           })
           .from(products);
-        sqlString = queryRequest.toSQL().sql;
-        queryResponse = await queryRequest;
-        endTime = new Date();
         break;
       case "suppliers":
         queryRequest = this.db
@@ -78,11 +66,11 @@ export class PgRepository {
             count: sql<number>`COUNT (*)`.as("count"),
           })
           .from(supplies);
-        sqlString = queryRequest.toSQL().sql;
-        queryResponse = await queryRequest;
-        endTime = new Date();
         break;
     }
+    const {sql: sqlString} = queryRequest.toSQL()
+    const queryResponse = await queryRequest
+    const endTime = new Date()
     return {
       data: queryResponse,
       sqlQueries: [
