@@ -27,6 +27,141 @@ export class PgRepository {
     this.db = db;
   }
 
+  public getCustomersCount = async() => {
+    const startTime = new Date()
+    const customerQuery = this.db
+      .select({
+        count: sql<number>`COUNT (*)`.as('count')
+      })
+      .from(customers);
+    const { sql: sqlString } = customerQuery.toSQL();
+
+    const queryResponse = await customerQuery;
+
+    const endTime = new Date()
+
+    return {
+      data: queryResponse,
+      sqlQueries: [
+        {
+          sql: sqlString,
+          sqlType: "select",
+          resultsCount: queryResponse.length,
+          timeStart: startTime.toISOString(),
+          timeTaken: endTime.getTime() - startTime.getTime(),
+        }
+      ]
+    };
+  }
+
+  public getEmployeesCount = async() => {
+    const startTime = new Date()
+    const customerQuery = this.db
+      .select({
+        count: sql<number>`COUNT (*)`.as('count')
+      })
+      .from(employees);
+    const { sql: sqlString } = customerQuery.toSQL();
+
+    const queryResponse = await customerQuery;
+
+    const endTime = new Date()
+
+    return {
+      data: queryResponse,
+      sqlQueries: [
+        {
+          sql: sqlString,
+          sqlType: "select",
+          resultsCount: queryResponse.length,
+          timeStart: startTime.toISOString(),
+          timeTaken: endTime.getTime() - startTime.getTime(),
+        }
+      ]
+    };
+  }
+
+  public getOrdersCount = async() => {
+    const startTime = new Date()
+    const customerQuery = this.db
+      .select({
+        count: sql<number>`COUNT (*)`.as('count')
+      })
+      .from(Orders);
+    const { sql: sqlString } = customerQuery.toSQL();
+
+    const queryResponse = await customerQuery;
+
+    const endTime = new Date()
+
+    return {
+      data: queryResponse,
+      sqlQueries: [
+        {
+          sql: sqlString,
+          sqlType: "select",
+          resultsCount: queryResponse.length,
+          timeStart: startTime.toISOString(),
+          timeTaken: endTime.getTime() - startTime.getTime(),
+        }
+      ]
+    };
+  }
+
+  public getProductsCount = async() => {
+    const startTime = new Date()
+    const customerQuery = this.db
+      .select({
+        count: sql<number>`COUNT (*)`.as('count')
+      })
+      .from(products);
+    const { sql: sqlString } = customerQuery.toSQL();
+
+    const queryResponse = await customerQuery;
+
+    const endTime = new Date()
+
+    return {
+      data: queryResponse,
+      sqlQueries: [
+        {
+          sql: sqlString,
+          sqlType: "select",
+          resultsCount: queryResponse.length,
+          timeStart: startTime.toISOString(),
+          timeTaken: endTime.getTime() - startTime.getTime(),
+        }
+      ]
+    };
+  }
+
+  public getSuppliersCount = async() => {
+    const startTime = new Date()
+    const customerQuery = this.db
+      .select({
+        count: sql<number>`COUNT (*)`.as('count')
+      })
+      .from(supplies);
+    const { sql: sqlString } = customerQuery.toSQL();
+
+    const queryResponse = await customerQuery;
+
+    const endTime = new Date()
+
+    return {
+      data: queryResponse,
+      sqlQueries: [
+        {
+          sql: sqlString,
+          sqlType: "select",
+          resultsCount: queryResponse.length,
+          timeStart: startTime.toISOString(),
+          timeTaken: endTime.getTime() - startTime.getTime(),
+        }
+      ]
+    };
+  }
+
   public getCustomerById = async (id: string) => {
     const startTime = new Date()
     const customerQuery = this.db
