@@ -146,13 +146,7 @@ export type OrderPage = {
     City: string;
     Country: string;
   }[];
-  sqlQueries: {
-    sql: string;
-    sqlType: string;
-    resultsCount: number;
-    timeStart: string;
-    timeTaken: number;
-  }[];
+  sqlQueries: sqlRecord[];
 };
 
 export type sqlRecord = {

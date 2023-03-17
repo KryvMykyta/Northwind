@@ -1,7 +1,63 @@
-import { CustomerInfo, CustomerInfoAvatar, EmployeeInfo, EmployeeInfoAvatar, OrderInfo, OrderPage, OrderPageInfo, OrderProductsInfo, SupplierInfo, SupplierInfoAvatar, sqlRecord } from "./../types/types";
-import { orderDetail, products } from "./../schemas/pgSchema";
-
+import {
+  CustomerInfo,
+  CustomerInfoAvatar,
+  EmployeeInfo,
+  EmployeeInfoAvatar,
+  OrderInfo,
+  OrderPage,
+  OrderPageInfo,
+  OrderProductsInfo,
+  SupplierInfo,
+  SupplierInfoAvatar,
+  sqlRecord,
+} from "./../types/types";
+import { repository } from "./../repository/pgRepository";
 export class DataFormatter {
+  public addTotalPages = async (
+    sqlQueries: sqlRecord[],
+    page: number,
+    table: string,
+    count?: string
+  ) => {
+    if (count && count === "true") {
+      let totalPagesData;
+      switch (table) {
+        case "customers":
+          totalPagesData = await repository.getCustomersCount();
+          break;
+        case "employees":
+          totalPagesData = await repository.getEmployeesCount();
+          break;
+        case "orders":
+          totalPagesData = await repository.getOrdersCount();
+          break;
+        case "products":
+          totalPagesData = await repository.getProductsCount();
+          break;
+        case "suppliers":
+          totalPagesData = await repository.getSuppliersCount();
+          break;
+      }
+      if (totalPagesData){
+        return {
+          totalPages: Math.ceil(totalPagesData.data[0].count / 20),
+          currentPage: page,
+          sqlQueries: [...sqlQueries, ...totalPagesData.sqlQueries],
+        };
+      }
+      return {
+        totalPages: 0,
+        currentPage: page,
+        sqlQueries,
+      };
+    }
+    return {
+      totalPages: 0,
+      currentPage: page,
+      sqlQueries,
+    };
+  };
+
   public addAvatarCustomer = (customerInfoList: CustomerInfo[]) => {
     const newCustomerList: CustomerInfoAvatar[] = [];
     customerInfoList.map((customerInfo) => {
@@ -68,21 +124,14 @@ export class DataFormatter {
     return responseData;
   };
 
-  public formatOrdersPageResponse = (ordersPage: OrderPage, sqlRecord: sqlRecord) => {
+  public formatOrdersPageResponse = (
+    ordersPage: OrderPage,
+    sqlRecord: sqlRecord
+  ) => {
     const responseData = {
       data: ordersPage.data,
-      sqlQueries: [
-        {
-          sql: ordersPage.sqlQueries[0].sql,
-          sqlType: ordersPage.sqlQueries[0].sqlType,
-          timeStart: ordersPage.sqlQueries[0].timeStart,
-          timeTaken: ordersPage.sqlQueries[0].timeTaken
-        },
-        sqlRecord
-      ],
+      sqlQueries: [...ordersPage.sqlQueries, sqlRecord],
     };
-    return responseData
+    return responseData;
   };
 }
-
-

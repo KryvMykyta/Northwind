@@ -5,24 +5,27 @@ import { repository } from "./../../repository/pgRepository";
 import dotenv from "dotenv";
 dotenv.config();
 
-export async function getOrders(req: Request<{ page: number }>, res: Response) {
+export async function getOrders(req: Request<{ page: number },{},{},{count?: string}>, res: Response) {
   try {
-    const page = req.params.page;
-    // const repository = new PgRepository(process.env.CONN_STRING as string);
+    const {page} = req.params
+    const {count} = req.query
     const formatter = new DataFormatter();
     const firstIdQuery = await repository.getFirstOrderId();
     const { data } = firstIdQuery;
     const {first} = data[0]
     const ordersPage = await repository.ordersPage(first, page);
-    const formattedRespones = formatter.formatOrdersPageResponse(ordersPage, {
-      sql: firstIdQuery.sqlQueries[0].sql,
-      sqlType: firstIdQuery.sqlQueries[0].sqlType,
-      resultsCount: firstIdQuery.sqlQueries[0].resultsCount,
-      timeStart: firstIdQuery.sqlQueries[0].timeStart,
-      timeTaken: firstIdQuery.sqlQueries[0].timeTaken,
+    const formattedResponse = formatter.formatOrdersPageResponse(ordersPage, firstIdQuery.sqlQueries[0]);
+
+    const totalPagesData = await formatter.addTotalPages(formattedResponse.sqlQueries, page,"orders", count)
+
+    return res.status(200).send({
+      data: formattedResponse.data,
+      totalPages: totalPagesData.totalPages,
+      currentPage: page,
+      sqlQueries: totalPagesData.sqlQueries
     });
 
-    return res.status(200).send(formattedRespones);
+    // return res.status(200).send(formattedRespones);
   } catch (err) {
     return res.status(500).send("Server error");
   }
