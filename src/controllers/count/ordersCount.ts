@@ -8,7 +8,7 @@ export async function getOrdersCount(
   res: Response
 ) {
   try {
-    const ordersCountData = await repository.getOrdersCount();
+    const ordersCountData = await repository.getCount("orders");
     return res.status(200).send({
       data: ordersCountData,
       sqlQueries: ordersCountData.sqlQueries

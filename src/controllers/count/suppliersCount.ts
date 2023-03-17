@@ -8,7 +8,7 @@ export async function getSuppliersCount(
   res: Response
 ) {
   try {
-    const suppliersCountData = await repository.getSuppliersCount();
+    const suppliersCountData = await repository.getCount("suppliers");
     return res.status(200).send({
       data: suppliersCountData,
       sqlQueries: suppliersCountData.sqlQueries

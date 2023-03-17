@@ -1,4 +1,5 @@
-import { shippers } from './../schemas/pgSchema';
+import { tables } from "./../types/types";
+import { shippers } from "./../schemas/pgSchema";
 import { drizzle, NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import {
@@ -27,19 +28,61 @@ export class PgRepository {
     this.db = db;
   }
 
-  public getCustomersCount = async() => {
-    const startTime = new Date()
-    const customerQuery = this.db
-      .select({
-        count: sql<number>`COUNT (*)`.as('count')
-      })
-      .from(customers);
-    const { sql: sqlString } = customerQuery.toSQL();
-
-    const queryResponse = await customerQuery;
-
-    const endTime = new Date()
-
+  public getCount = async (table: tables) => {
+    const startTime = new Date();
+    let queryRequest, sqlString, endTime, queryResponse;
+    switch (table) {
+      case "customers":
+        queryRequest = this.db
+          .select({
+            count: sql<number>`COUNT (*)`.as("count"),
+          })
+          .from(customers);
+        sqlString = queryRequest.toSQL().sql;
+        queryResponse = await queryRequest;
+        endTime = new Date();
+        break;
+      case "employees":
+        queryRequest = this.db
+          .select({
+            count: sql<number>`COUNT (*)`.as("count"),
+          })
+          .from(employees);
+        sqlString = queryRequest.toSQL().sql;
+        queryResponse = await queryRequest;
+        endTime = new Date();
+        break;
+      case "orders":
+        queryRequest = this.db
+          .select({
+            count: sql<number>`COUNT (*)`.as("count"),
+          })
+          .from(Orders);
+        sqlString = queryRequest.toSQL().sql;
+        queryResponse = await queryRequest;
+        endTime = new Date();
+        break;
+      case "products":
+        queryRequest = this.db
+          .select({
+            count: sql<number>`COUNT (*)`.as("count"),
+          })
+          .from(products);
+        sqlString = queryRequest.toSQL().sql;
+        queryResponse = await queryRequest;
+        endTime = new Date();
+        break;
+      case "suppliers":
+        queryRequest = this.db
+          .select({
+            count: sql<number>`COUNT (*)`.as("count"),
+          })
+          .from(supplies);
+        sqlString = queryRequest.toSQL().sql;
+        queryResponse = await queryRequest;
+        endTime = new Date();
+        break;
+    }
     return {
       data: queryResponse,
       sqlQueries: [
@@ -49,121 +92,14 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-  }
+  };
 
-  public getEmployeesCount = async() => {
-    const startTime = new Date()
-    const customerQuery = this.db
-      .select({
-        count: sql<number>`COUNT (*)`.as('count')
-      })
-      .from(employees);
-    const { sql: sqlString } = customerQuery.toSQL();
-
-    const queryResponse = await customerQuery;
-
-    const endTime = new Date()
-
-    return {
-      data: queryResponse,
-      sqlQueries: [
-        {
-          sql: sqlString,
-          sqlType: "select",
-          resultsCount: queryResponse.length,
-          timeStart: startTime.toISOString(),
-          timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
-    };
-  }
-
-  public getOrdersCount = async() => {
-    const startTime = new Date()
-    const customerQuery = this.db
-      .select({
-        count: sql<number>`COUNT (*)`.as('count')
-      })
-      .from(Orders);
-    const { sql: sqlString } = customerQuery.toSQL();
-
-    const queryResponse = await customerQuery;
-
-    const endTime = new Date()
-
-    return {
-      data: queryResponse,
-      sqlQueries: [
-        {
-          sql: sqlString,
-          sqlType: "select",
-          resultsCount: queryResponse.length,
-          timeStart: startTime.toISOString(),
-          timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
-    };
-  }
-
-  public getProductsCount = async() => {
-    const startTime = new Date()
-    const customerQuery = this.db
-      .select({
-        count: sql<number>`COUNT (*)`.as('count')
-      })
-      .from(products);
-    const { sql: sqlString } = customerQuery.toSQL();
-
-    const queryResponse = await customerQuery;
-
-    const endTime = new Date()
-
-    return {
-      data: queryResponse,
-      sqlQueries: [
-        {
-          sql: sqlString,
-          sqlType: "select",
-          resultsCount: queryResponse.length,
-          timeStart: startTime.toISOString(),
-          timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
-    };
-  }
-
-  public getSuppliersCount = async() => {
-    const startTime = new Date()
-    const customerQuery = this.db
-      .select({
-        count: sql<number>`COUNT (*)`.as('count')
-      })
-      .from(supplies);
-    const { sql: sqlString } = customerQuery.toSQL();
-
-    const queryResponse = await customerQuery;
-
-    const endTime = new Date()
-
-    return {
-      data: queryResponse,
-      sqlQueries: [
-        {
-          sql: sqlString,
-          sqlType: "select",
-          resultsCount: queryResponse.length,
-          timeStart: startTime.toISOString(),
-          timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
-    };
-  }
 
   public getCustomerById = async (id: string) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const customerQuery = this.db
       .select()
       .from(customers)
@@ -172,7 +108,7 @@ export class PgRepository {
 
     const queryResponse = await customerQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -183,13 +119,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
   };
 
   public getEmployeeById = async (id: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const employeeQuery = this.db
       .select()
       .from(employees)
@@ -198,7 +134,7 @@ export class PgRepository {
 
     const queryResponse = await employeeQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -209,14 +145,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-
   };
 
   public getProductById = async (id: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const productQuery = this.db
       .select({
         productName: products.ProductName,
@@ -236,7 +171,7 @@ export class PgRepository {
 
     const queryResponse = await productQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -247,13 +182,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
   };
 
   public getSupplierById = async (id: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const suppliesQuery = this.db
       .select()
       .from(supplies)
@@ -262,7 +197,7 @@ export class PgRepository {
 
     const queryResponse = await suppliesQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -273,14 +208,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-
   };
 
   public searchCustomers = async (keyword: string) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const foundCustomers = this.db
       .select({
         id: customers.CustomerID,
@@ -296,7 +230,7 @@ export class PgRepository {
 
     const queryResponse = await foundCustomers;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -307,13 +241,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
   };
 
   public searchProducts = async (keyword: string) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const foundProducts = this.db
       .select({
         id: products.ProductID,
@@ -328,7 +262,7 @@ export class PgRepository {
     const { sql } = foundProducts.toSQL();
 
     const queryResponse = await foundProducts;
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -339,14 +273,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-
   };
 
   public customersPage = async (page: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const customersQuery = this.db
       .select({
         id: customers.CustomerID,
@@ -364,7 +297,7 @@ export class PgRepository {
 
     const queryResponse = await customersQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -375,15 +308,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-
   };
 
   public productsPage = async (page: number) => {
-
-    const startTime = new Date()
+    const startTime = new Date();
     const productsQuery = this.db
       .select({
         id: products.ProductID,
@@ -401,7 +332,7 @@ export class PgRepository {
 
     const queryResponse = await productsQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -412,15 +343,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-
   };
 
   public suppliersPage = async (page: number) => {
-
-    const startTime = new Date()
+    const startTime = new Date();
     const suppliesQuery = this.db
       .select({
         id: supplies.SupplierID,
@@ -438,7 +367,7 @@ export class PgRepository {
 
     const queryResponse = await suppliesQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -449,14 +378,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-
   };
 
   public employeesPage = async (page: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const employeesQuery = this.db
       .select({
         id: employees.EmployeeID,
@@ -476,7 +404,7 @@ export class PgRepository {
 
     const queryResponse = await employeesQuery;
 
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -487,13 +415,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
   };
 
   public getFirstOrderId = async () => {
-    const startTime = new Date()
+    const startTime = new Date();
     const totalQuery = this.db
       .select({ first: Orders.OrderID })
       .from(Orders)
@@ -503,7 +431,7 @@ export class PgRepository {
     const { sql: sqlString } = totalQuery.toSQL();
 
     const queryResponse = await totalQuery;
-    const endTime = new Date()
+    const endTime = new Date();
     return {
       data: queryResponse,
       sqlQueries: [
@@ -513,14 +441,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-
   };
 
   public ordersPage = async (first: number, page: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const ordersQuery = this.db
       .select({
         TotalProductsPrice:
@@ -546,13 +473,20 @@ export class PgRepository {
           gte(Orders.OrderID, Number(first) + (page - 1) * 20),
           lt(Orders.OrderID, Number(first) + page * 20)
         )
-      ).groupBy(Orders.OrderID, Orders.ShippedDate, Orders.ShipName, Orders.ShipCity, Orders.ShipCountry)
+      )
+      .groupBy(
+        Orders.OrderID,
+        Orders.ShippedDate,
+        Orders.ShipName,
+        Orders.ShipCity,
+        Orders.ShipCountry
+      )
       .orderBy(asc(Orders.OrderID));
 
     const { sql: sqlString } = ordersQuery.toSQL();
 
     const queryResponse = await ordersQuery;
-    const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -563,13 +497,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
   };
 
   public getOrderById = async (id: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const orderQuery = this.db
       .select({
         CustomerId: Orders.CustomerID,
@@ -596,30 +530,32 @@ export class PgRepository {
         ShipCity: Orders.ShipCity,
         ShipRegion: Orders.ShipRegion,
         PostalCode: Orders.ShipPostalCode,
-        ShipCountry: Orders.ShipCountry
+        ShipCountry: Orders.ShipCountry,
       })
       .from(Orders)
       .leftJoin(orderDetail, eq(Orders.OrderID, orderDetail.OrderID))
       .leftJoin(shippers, eq(Orders.ShipVia, shippers.shipperID))
       .where(eq(orderDetail.OrderID, id))
-      .groupBy(Orders.CustomerID,
+      .groupBy(
+        Orders.CustomerID,
         shippers.companyName,
-        Orders.OrderID, 
-        Orders.ShipName, 
-        Orders.Freight, 
-        Orders.OrderDate, 
-        Orders.RequiredDate, 
-        Orders.ShippedDate, 
-        Orders.ShipCity, 
-        Orders.ShipRegion, 
-        Orders.ShipPostalCode, 
-        Orders.ShipCountry);
+        Orders.OrderID,
+        Orders.ShipName,
+        Orders.Freight,
+        Orders.OrderDate,
+        Orders.RequiredDate,
+        Orders.ShippedDate,
+        Orders.ShipCity,
+        Orders.ShipRegion,
+        Orders.ShipPostalCode,
+        Orders.ShipCountry
+      );
 
-      const { sql: sqlString } = orderQuery.toSQL();
+    const { sql: sqlString } = orderQuery.toSQL();
 
-      const queryResponse = await orderQuery;
+    const queryResponse = await orderQuery;
 
-      const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -630,14 +566,13 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-  
   };
 
   public getOrderProductsById = async (id: number) => {
-    const startTime = new Date()
+    const startTime = new Date();
     const orderQuery = this.db
       .select({
         ProductName: products.ProductName,
@@ -647,19 +582,25 @@ export class PgRepository {
         TotalPrice:
           sql<number>`${orderDetail.UnitPrice} * ${orderDetail.Quantity}`.as(
             "TotalPrice"
-          ), 
-        Discount: orderDetail.Discount
+          ),
+        Discount: orderDetail.Discount,
       })
       .from(orderDetail)
       .leftJoin(products, eq(products.ProductID, orderDetail.ProductID))
       .where(eq(orderDetail.OrderID, id))
-      .groupBy(orderDetail.ProductID,products.ProductName, orderDetail.Quantity, orderDetail.UnitPrice, orderDetail.Discount);
+      .groupBy(
+        orderDetail.ProductID,
+        products.ProductName,
+        orderDetail.Quantity,
+        orderDetail.UnitPrice,
+        orderDetail.Discount
+      );
 
-      const { sql: sqlString } = orderQuery.toSQL();
+    const { sql: sqlString } = orderQuery.toSQL();
 
-      const queryResponse = await orderQuery;
+    const queryResponse = await orderQuery;
 
-      const endTime = new Date()
+    const endTime = new Date();
 
     return {
       data: queryResponse,
@@ -670,11 +611,10 @@ export class PgRepository {
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
-        }
-      ]
+        },
+      ],
     };
-  
-  }
+  };
 }
 
-export const repository = new PgRepository(process.env.CONN_STRING as string)
+export const repository = new PgRepository(process.env.CONN_STRING as string);

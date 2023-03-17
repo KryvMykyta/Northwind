@@ -156,3 +156,5 @@ export type sqlRecord = {
   timeStart: string;
   timeTaken: number;
 };
+
+export type tables = "employees" | "customers" | "suppliers" | "products" | "orders" 

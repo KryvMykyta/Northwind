@@ -10,45 +10,39 @@ import {
   SupplierInfo,
   SupplierInfoAvatar,
   sqlRecord,
+  tables,
 } from "./../types/types";
 import { repository } from "./../repository/pgRepository";
 export class DataFormatter {
   public addTotalPages = async (
     sqlQueries: sqlRecord[],
     page: number,
-    table: string,
+    table: tables,
     count?: string
   ) => {
     if (count && count === "true") {
       let totalPagesData;
       switch (table) {
         case "customers":
-          totalPagesData = await repository.getCustomersCount();
+          totalPagesData = await repository.getCount("customers");
           break;
         case "employees":
-          totalPagesData = await repository.getEmployeesCount();
+          totalPagesData = await repository.getCount("employees");
           break;
         case "orders":
-          totalPagesData = await repository.getOrdersCount();
+          totalPagesData = await repository.getCount("orders");
           break;
         case "products":
-          totalPagesData = await repository.getProductsCount();
+          totalPagesData = await repository.getCount("products");
           break;
         case "suppliers":
-          totalPagesData = await repository.getSuppliersCount();
+          totalPagesData = await repository.getCount("suppliers");
           break;
       }
-      if (totalPagesData){
-        return {
-          totalPages: Math.ceil(totalPagesData.data[0].count / 20),
-          currentPage: page,
-          sqlQueries: [...sqlQueries, ...totalPagesData.sqlQueries],
-        };
-      }
       return {
-        totalPages: 0,
+        totalPages: Math.ceil(totalPagesData.data[0].count / 20),
         currentPage: page,
-        sqlQueries,
+        sqlQueries: [...sqlQueries, ...totalPagesData.sqlQueries],
       };
     }
     return {

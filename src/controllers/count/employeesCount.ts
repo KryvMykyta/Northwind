@@ -8,7 +8,7 @@ export async function getEmployeesCount(
   res: Response
 ) {
   try {
-    const employeesCountData = await repository.getEmployeesCount();
+    const employeesCountData = await repository.getCount("employees");
     return res.status(200).send({
       data: employeesCountData,
       sqlQueries: employeesCountData.sqlQueries
