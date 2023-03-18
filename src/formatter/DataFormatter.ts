@@ -103,22 +103,7 @@ export class DataFormatter {
     const responseData = {
       orderInfo: orderInfo.data,
       productsInfo: productsInfo.data,
-      sqlQueries: [
-        {
-          sql: orderInfo.sqlQueries[0].sql,
-          sqlType: orderInfo.sqlQueries[0].sqlType,
-          resultsCount: orderInfo.sqlQueries[0].resultsCount,
-          timeStart: orderInfo.sqlQueries[0].timeStart,
-          timeTaken: orderInfo.sqlQueries[0].timeTaken,
-        },
-        {
-          sql: productsInfo.sqlQueries[0].sql,
-          sqlType: productsInfo.sqlQueries[0].sqlType,
-          resultsCount: productsInfo.sqlQueries[0].resultsCount,
-          timeStart: productsInfo.sqlQueries[0].timeStart,
-          timeTaken: productsInfo.sqlQueries[0].timeTaken,
-        },
-      ],
+      sqlQueries: [...productsInfo.sqlQueries, ...orderInfo.sqlQueries]
     };
     return responseData;
   };

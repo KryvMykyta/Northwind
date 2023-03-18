@@ -16,6 +16,7 @@ const PORT = 3000
 
 app.use(express.json())
 app.use(cors())
+
 const poolConnection = new Pool({
     connectionString: process.env.CONN_STRING as string,
   });
