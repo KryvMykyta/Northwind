@@ -12,7 +12,7 @@ export const orderDetail = pgTable('OrderDetails', {
     Discount: real('Discount').notNull()
 });
 
-export const Orders = pgTable('Orders', {
+export const orders = pgTable('Orders', {
     OrderID: real('OrderID').notNull(),
     CustomerID: text('CustomerID').notNull(),
     EmployeeID: real('EmployeeID').notNull(),

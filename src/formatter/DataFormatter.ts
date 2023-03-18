@@ -1,3 +1,4 @@
+import { PgRepository } from './../repository/pgRepository';
 import {
   CustomerInfo,
   CustomerInfoAvatar,
@@ -12,8 +13,11 @@ import {
   sqlRecord,
   tables,
 } from "./../types/types";
-import { repository } from "./../repository/pgRepository";
 export class DataFormatter {
+  repository: PgRepository
+  constructor(db: PgRepository) {
+    this.repository = db
+  }
   public addTotalPages = async (
     sqlQueries: sqlRecord[],
     page: number,
@@ -24,19 +28,19 @@ export class DataFormatter {
       let totalPagesData;
       switch (table) {
         case "customers":
-          totalPagesData = await repository.getCount("customers");
+          totalPagesData = await this.repository.getCount("customers");
           break;
         case "employees":
-          totalPagesData = await repository.getCount("employees");
+          totalPagesData = await this.repository.getCount("employees");
           break;
         case "orders":
-          totalPagesData = await repository.getCount("orders");
+          totalPagesData = await this.repository.getCount("orders");
           break;
         case "products":
-          totalPagesData = await repository.getCount("products");
+          totalPagesData = await this.repository.getCount("products");
           break;
         case "suppliers":
-          totalPagesData = await repository.getCount("suppliers");
+          totalPagesData = await this.repository.getCount("suppliers");
           break;
       }
       return {

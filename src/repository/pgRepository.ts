@@ -6,24 +6,17 @@ import {
   customers,
   employees,
   orderDetail,
-  Orders,
+  orders,
   products,
   supplies,
 } from "../schemas/pgSchema";
 import { sql } from "drizzle-orm/sql";
 import { eq, asc, ilike, and, gte, lt } from "drizzle-orm/expressions";
-import dotenv from "dotenv";
-dotenv.config();
 
 export class PgRepository {
-  CONN_STRING: string;
   db: NodePgDatabase;
 
-  constructor(connectionString: string) {
-    this.CONN_STRING = connectionString;
-    const poolConnection = new Pool({
-      connectionString: this.CONN_STRING,
-    });
+  constructor(poolConnection: Pool) {
     const db = drizzle(poolConnection);
     this.db = db;
   }
@@ -51,7 +44,7 @@ export class PgRepository {
           .select({
             count: sql<number>`COUNT (*)`.as("count"),
           })
-          .from(Orders);
+          .from(orders);
         break;
       case "products":
         queryRequest = this.db
@@ -411,10 +404,10 @@ export class PgRepository {
   public getFirstOrderId = async () => {
     const startTime = new Date();
     const totalQuery = this.db
-      .select({ first: Orders.OrderID })
-      .from(Orders)
+      .select({ first: orders.OrderID })
+      .from(orders)
       .limit(1)
-      .orderBy(asc(Orders.OrderID));
+      .orderBy(asc(orders.OrderID));
 
     const { sql: sqlString } = totalQuery.toSQL();
 
@@ -448,28 +441,28 @@ export class PgRepository {
         TotalProducts: sql<number>`COUNT(${orderDetail.OrderID})`.as(
           "TotalProducts"
         ),
-        OrderId: Orders.OrderID,
-        Shipped: Orders.ShippedDate,
-        ShipName: Orders.ShipName,
-        City: Orders.ShipCity,
-        Country: Orders.ShipCountry,
+        OrderId: orders.OrderID,
+        Shipped: orders.ShippedDate,
+        ShipName: orders.ShipName,
+        City: orders.ShipCity,
+        Country: orders.ShipCountry,
       })
-      .from(Orders)
-      .leftJoin(orderDetail, eq(Orders.OrderID, orderDetail.OrderID))
+      .from(orders)
+      .leftJoin(orderDetail, eq(orders.OrderID, orderDetail.OrderID))
       .where(
         and(
-          gte(Orders.OrderID, Number(first) + (page - 1) * 20),
-          lt(Orders.OrderID, Number(first) + page * 20)
+          gte(orders.OrderID, Number(first) + (page - 1) * 20),
+          lt(orders.OrderID, Number(first) + page * 20)
         )
       )
       .groupBy(
-        Orders.OrderID,
-        Orders.ShippedDate,
-        Orders.ShipName,
-        Orders.ShipCity,
-        Orders.ShipCountry
+        orders.OrderID,
+        orders.ShippedDate,
+        orders.ShipName,
+        orders.ShipCity,
+        orders.ShipCountry
       )
-      .orderBy(asc(Orders.OrderID));
+      .orderBy(asc(orders.OrderID));
 
     const { sql: sqlString } = ordersQuery.toSQL();
 
@@ -494,8 +487,8 @@ export class PgRepository {
     const startTime = new Date();
     const orderQuery = this.db
       .select({
-        CustomerId: Orders.CustomerID,
-        ShipName: Orders.ShipName,
+        CustomerId: orders.CustomerID,
+        ShipName: orders.ShipName,
         TotalProductsDiscount:
           sql<number>`SUM(${orderDetail.UnitPrice} * ${orderDetail.Quantity} * ${orderDetail.Discount})`.as(
             "TotalProductsDiscount"
@@ -511,32 +504,32 @@ export class PgRepository {
           "TotalProducts"
         ),
         CompanyShipper: shippers.companyName,
-        Freight: Orders.Freight,
-        OrderDate: Orders.OrderDate,
-        RequiredDate: Orders.RequiredDate,
-        ShippedDate: Orders.ShippedDate,
-        ShipCity: Orders.ShipCity,
-        ShipRegion: Orders.ShipRegion,
-        PostalCode: Orders.ShipPostalCode,
-        ShipCountry: Orders.ShipCountry,
+        Freight: orders.Freight,
+        OrderDate: orders.OrderDate,
+        RequiredDate: orders.RequiredDate,
+        ShippedDate: orders.ShippedDate,
+        ShipCity: orders.ShipCity,
+        ShipRegion: orders.ShipRegion,
+        PostalCode: orders.ShipPostalCode,
+        ShipCountry: orders.ShipCountry,
       })
-      .from(Orders)
-      .leftJoin(orderDetail, eq(Orders.OrderID, orderDetail.OrderID))
-      .leftJoin(shippers, eq(Orders.ShipVia, shippers.shipperID))
+      .from(orders)
+      .leftJoin(orderDetail, eq(orders.OrderID, orderDetail.OrderID))
+      .leftJoin(shippers, eq(orders.ShipVia, shippers.shipperID))
       .where(eq(orderDetail.OrderID, id))
       .groupBy(
-        Orders.CustomerID,
+        orders.CustomerID,
         shippers.companyName,
-        Orders.OrderID,
-        Orders.ShipName,
-        Orders.Freight,
-        Orders.OrderDate,
-        Orders.RequiredDate,
-        Orders.ShippedDate,
-        Orders.ShipCity,
-        Orders.ShipRegion,
-        Orders.ShipPostalCode,
-        Orders.ShipCountry
+        orders.OrderID,
+        orders.ShipName,
+        orders.Freight,
+        orders.OrderDate,
+        orders.RequiredDate,
+        orders.ShippedDate,
+        orders.ShipCity,
+        orders.ShipRegion,
+        orders.ShipPostalCode,
+        orders.ShipCountry
       );
 
     const { sql: sqlString } = orderQuery.toSQL();
@@ -604,5 +597,3 @@ export class PgRepository {
     };
   };
 }
-
-export const repository = new PgRepository(process.env.CONN_STRING as string);
