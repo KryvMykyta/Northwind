@@ -271,6 +271,7 @@ export class PgRepository {
         country: customers.Country,
       })
       .from(customers)
+      .orderBy(customers.CustomerID)
       .limit(20)
       .offset((page - 1) * 20);
 
@@ -306,6 +307,7 @@ export class PgRepository {
         orders: products.UnitsOnOrder,
       })
       .from(products)
+      .orderBy(products.ProductID)
       .limit(20)
       .offset((page - 1) * 20);
 
@@ -341,6 +343,7 @@ export class PgRepository {
         country: supplies.Country,
       })
       .from(supplies)
+      .orderBy(supplies.SupplierID)
       .limit(20)
       .offset((page - 1) * 20);
 
@@ -378,6 +381,7 @@ export class PgRepository {
         country: employees.Country,
       })
       .from(employees)
+      .orderBy(employees.EmployeeID)
       .limit(20)
       .offset((page - 1) * 20);
 
@@ -575,7 +579,7 @@ export class PgRepository {
         orderDetail.Quantity,
         orderDetail.UnitPrice,
         orderDetail.Discount
-      );
+      )
 
     const { sql: sqlString } = orderQuery.toSQL();
 
@@ -596,4 +600,6 @@ export class PgRepository {
       ],
     };
   };
+
 }
+
