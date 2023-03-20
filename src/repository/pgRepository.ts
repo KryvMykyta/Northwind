@@ -12,6 +12,7 @@ import {
 } from "../schemas/pgSchema";
 import { sql } from "drizzle-orm/sql";
 import { eq, asc, ilike, and, gte, lt } from "drizzle-orm/expressions";
+import { alias } from "drizzle-orm/pg-core";
 
 export class PgRepository {
   db: NodePgDatabase;
@@ -107,11 +108,18 @@ export class PgRepository {
 
   public getEmployeeById = async (id: number) => {
     const startTime = new Date();
+    const aliasEmployee = alias(employees,"aliasEmployee")
     const employeeQuery = this.db
-      .select()
+      .select({
+        ...employees,
+        reportsName: sql<string>`CONCAT(${aliasEmployee.FirstName}, ' ' , ${aliasEmployee.LastName})`.as(
+          "reportsName"
+        )
+      })
       .from(employees)
+      .leftJoin(aliasEmployee,eq(employees.ReportsTo, aliasEmployee.EmployeeID))
       .where(eq(employees.EmployeeID, id));
-    const { sql } = employeeQuery.toSQL();
+    const { sql: sqlString } = employeeQuery.toSQL();
 
     const queryResponse = await employeeQuery;
 
@@ -121,8 +129,8 @@ export class PgRepository {
       data: queryResponse,
       sqlQueries: [
         {
-          sql,
-          sqlType: "select where",
+          sql: sqlString,
+          sqlType: "select where left join",
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),

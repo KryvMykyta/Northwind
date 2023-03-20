@@ -73,7 +73,6 @@ export class DataFormatter {
     const newCustomerList: SupplierInfoAvatar[] = [];
     supplierInfoList.map((supplierInfo) => {
       const name = supplierInfo.name.split(" ");
-      console.log(name)
       const avatarLink = `https://avatars.dicebear.com/v2/initials/${name[0]}-${
         name[name.length - 1]
       }.svg`;
