@@ -294,7 +294,7 @@ export class PgRepository {
       sqlQueries: [
         {
           sql,
-          sqlType: "select where",
+          sqlType: "select",
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
@@ -330,7 +330,7 @@ export class PgRepository {
       sqlQueries: [
         {
           sql,
-          sqlType: "select where",
+          sqlType: "select",
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
@@ -366,7 +366,7 @@ export class PgRepository {
       sqlQueries: [
         {
           sql,
-          sqlType: "select where",
+          sqlType: "select",
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
@@ -404,7 +404,7 @@ export class PgRepository {
       sqlQueries: [
         {
           sql: sqlString,
-          sqlType: "select where",
+          sqlType: "select",
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
@@ -430,7 +430,7 @@ export class PgRepository {
       sqlQueries: [
         {
           sql: sqlString,
-          sqlType: "select where",
+          sqlType: "select",
           resultsCount: queryResponse.length,
           timeStart: startTime.toISOString(),
           timeTaken: endTime.getTime() - startTime.getTime(),
