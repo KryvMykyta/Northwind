@@ -46,7 +46,7 @@ export class DataFormatter {
       return {
         totalPages: Math.ceil(totalPagesData.data[0].count / 20),
         currentPage: page,
-        sqlQueries: [...sqlQueries, ...totalPagesData.sqlQueries],
+        sqlQueries: [ ...totalPagesData.sqlQueries, ...sqlQueries],
       };
     }
     return {
@@ -113,7 +113,7 @@ export class DataFormatter {
   ) => {
     const responseData = {
       data: ordersPage.data,
-      sqlQueries: [...ordersPage.sqlQueries, sqlRecord],
+      sqlQueries: [ sqlRecord, ...ordersPage.sqlQueries],
     };
     return responseData;
   };
