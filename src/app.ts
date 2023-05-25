@@ -1,13 +1,11 @@
-import { DataFormatter } from './formatter/DataFormatter';
-import { pagesController } from './controllers/pagesController';
-import { searchController } from './controllers/searchController';
-import { itemController } from './controllers/itemController';
-import { PgRepository } from './repository/pgRepository';
 import { Pool } from "pg";
 import express from 'express'
 import dotenv from "dotenv";
 dotenv.config();
 import cors from 'cors'
+import { ItemRouter } from './routers/ItemRouter';
+import { SearchRouter } from './routers/SearchRouter';
+import { PagesRouter } from './routers/PagesRouter';
 
 
 const app = express()
@@ -21,19 +19,14 @@ const poolConnection = new Pool({
     connectionString: process.env.CONN_STRING as string,
   });
 
-const repository = new PgRepository(poolConnection)
-const formatter = new DataFormatter(repository)
+const itemRouter = new ItemRouter('/item', poolConnection)
+const searchRouter = new SearchRouter('/search', poolConnection)
+const pagesRouter = new PagesRouter('/pages', poolConnection)
 
-const items = new itemController("/item", repository, formatter)
-const search = new searchController("/search", repository, formatter)
-const pages = new pagesController("/pages", repository, formatter)
-
-const controllers = [items, search, pages]
-controllers.forEach((controller) => {
-    controller.init()
-    app.use(controller.path, controller.router)
+const routers = [itemRouter, searchRouter, pagesRouter]
+routers.forEach((router) => {
+    app.use(router.path, router.router)
 })
-
 
 app.listen(PORT, () => {
     console.log("started")

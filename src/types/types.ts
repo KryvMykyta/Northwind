@@ -7,15 +7,7 @@ export type CustomerInfo = {
   country: string | null;
 };
 
-export type CustomerInfoAvatar = {
-  id: string;
-  company: string;
-  name: string;
-  title: string;
-  city: string | null;
-  country: string | null;
-  avatarLink: string;
-};
+export type CustomerInfoAvatar = CustomerInfo & {avatarLink: string}
 
 export type SupplierInfo = {
   id: number;
@@ -26,15 +18,7 @@ export type SupplierInfo = {
   country: string;
 };
 
-export type SupplierInfoAvatar = {
-  id: number;
-  companyName: string;
-  name: string;
-  title: string;
-  city: string;
-  country: string;
-  avatarLink: string;
-};
+export type SupplierInfoAvatar = SupplierInfo & {avatarLink: string}
 
 export type EmployeeInfo = {
   id: number;
@@ -45,107 +29,64 @@ export type EmployeeInfo = {
   country: string;
 };
 
-export type EmployeeInfoAvatar = {
-  id: number;
-  name: string;
-  phone: string;
-  title: string;
-  city: string;
-  country: string;
-  avatarLink: string;
-};
+export type EmployeeInfoAvatar = EmployeeInfo & {avatarLink: string}
 
 export type OrderInfo = {
-  data: {
-    CustomerId: string;
-    ShipName: string;
-    TotalProductsDiscount: number;
-    TotalProductsPrice: number;
-    TotalProductsItems: number;
-    TotalProducts: number;
-    Freight: number;
-    OrderDate: string;
-    RequiredDate: string;
-    ShippedDate: string | null;
-    ShipCity: string;
-    ShipRegion: string | null;
-    PostalCode: string | null;
-    ShipCountry: string;
-    CompanyShipper: string | null;
-  }[];
-  sqlQueries: {
-    sql: string;
-    sqlType: string;
-    resultsCount: number;
-    timeStart: string;
-    timeTaken: number;
-  }[];
+  CustomerId: string;
+  ShipName: string;
+  TotalProductsDiscount: number;
+  TotalProductsPrice: number;
+  TotalProductsItems: number;
+  TotalProducts: number;
+  CompanyShipper: string | null;
+  Freight: number;
+  OrderDate: string;
+  RequiredDate: string;
+  ShippedDate: string | null;
+  ShipCity: string;
+  ShipRegion: string | null;
+  PostalCode: string | null;
+  ShipCountry: string;
+}
+
+export type OrderInfoQuery = {
+  data: OrderInfo[];
+  sqlQueries: sqlRecord[];
 };
 
-export type OrderProductsInfo = {
-  data: {
-    ProductName: string | null;
-    ProductId: number;
-    Quantity: number;
-    OrderPrice: number;
-    TotalPrice: number;
-    Discount: number;
-  }[];
-  sqlQueries: {
-    sql: string;
-    sqlType: string;
-    resultsCount: number;
-    timeStart: string;
-    timeTaken: number;
-  }[];
+export type OrderProducts = {
+  ProductName: string | null;
+  ProductId: number;
+  Quantity: number;
+  OrderPrice: number;
+  TotalPrice: number;
+  Discount: number;
+}
+
+export type OrderProductsQuery = {
+  data: OrderProducts[];
+  sqlQueries: sqlRecord[];
 };
 
-export type OrderPageInfo = {
-  productsInfo: {
-    ProductName: string | null;
-    ProductId: number;
-    Quantity: number;
-    OrderPrice: number;
-    TotalPrice: number;
-    Discount: number;
-  }[];
-  orderInfo: {
-    CustomerId: string;
-    ShipName: string;
-    TotalProductsDiscount: number;
-    TotalProductsPrice: number;
-    TotalProductsItems: number;
-    TotalProducts: number;
-    CompanyShipper: string | null;
-    Freight: number;
-    OrderDate: string;
-    RequiredDate: string;
-    ShippedDate: string | null;
-    ShipCity: string;
-    ShipRegion: string | null;
-    PostalCode: string | null;
-    ShipCountry: string;
-  }[];
-  sqlQueries: {
-    sql: string;
-    sqlType: string;
-    resultsCount: number;
-    timeStart: string;
-    timeTaken: number;
-  }[];
+export type OrderItemResponse = {
+  productsInfo: OrderProducts[];
+  orderInfo: OrderInfo[];
+  sqlQueries: sqlRecord[];
 };
 
-export type OrderPage = {
-  data: {
-    TotalProductsPrice: number;
-    TotalProductsItems: number;
-    TotalProducts: number;
-    OrderId: number;
-    Shipped: string | null;
-    ShipName: string;
-    City: string;
-    Country: string;
-  }[];
+export type OrderPageItem = {
+  TotalProductsPrice: number;
+  TotalProductsItems: number;
+  TotalProducts: number;
+  OrderId: number;
+  Shipped: string | null;
+  ShipName: string;
+  City: string;
+  Country: string;
+}
+
+export type OrderPageResponse = {
+  data: OrderPageItem[];
   sqlQueries: sqlRecord[];
 };
 
