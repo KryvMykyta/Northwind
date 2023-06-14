@@ -1,21 +1,21 @@
 import { RepositoryBase } from "./RepositoryBase";
-import { Customer, Employee, Supplier, shippers } from "./../schemas/pgSchema";
 import {
+  Supplier,
+  shippers,
   customers,
   employees,
   orderDetail,
   orders,
   products,
   supplies,
-} from "../schemas/pgSchema";
+} from "./../schemas/pgSchema";
 import { sql } from "drizzle-orm/sql";
 import { eq } from "drizzle-orm/expressions";
 import { alias } from "drizzle-orm/pg-core";
-import { sqlRecord } from "types/types";
-import { EmployeeRepositoryResponse, ProductRepositoryResponse } from "./../types/repositoryTypes";
+import { CustomerItemQueryResponse, EmployeeItemQueryResponse, OrderItemQueryResponse, OrderProductsQueryResponse, ProductItemQueryResponse, sqlRecord } from "./../types/types";
 
 export class ItemRepository extends RepositoryBase {
-  public getCustomerById = async (id: string) : Promise<{data: Customer[], sqlQueries: sqlRecord[]}> => {
+  public getCustomerById = async (id: string) : Promise<CustomerItemQueryResponse> => {
     const startTime = new Date();
     const customerQuery = this.db
       .select()
@@ -41,7 +41,7 @@ export class ItemRepository extends RepositoryBase {
     };
   };
 
-  public getEmployeeById = async (id: number) : Promise<{data: EmployeeRepositoryResponse[], sqlQueries: sqlRecord[]}> => {
+  public getEmployeeById = async (id: number) : Promise<EmployeeItemQueryResponse> => {
     const startTime = new Date();
     const aliasEmployee = alias(employees, "aliasEmployee");
     const employeeQuery = this.db
@@ -78,7 +78,7 @@ export class ItemRepository extends RepositoryBase {
     };
   };
 
-  public getProductById = async (id: number) : Promise<{data: ProductRepositoryResponse[], sqlQueries: sqlRecord[]}> => {
+  public getProductById = async (id: number) : Promise<ProductItemQueryResponse> => {
     const startTime = new Date();
     const productQuery = this.db
       .select({
@@ -140,7 +140,7 @@ export class ItemRepository extends RepositoryBase {
       ],
     };
   };
-  public getOrderById = async (id: number) => {
+  public getOrderById = async (id: number) : Promise<OrderItemQueryResponse> => {
     const startTime = new Date();
     const orderQuery = this.db
       .select({
@@ -209,7 +209,7 @@ export class ItemRepository extends RepositoryBase {
     };
   };
 
-  public getOrderProductsById = async (id: number) => {
+  public getOrderProductsById = async (id: number) : Promise<OrderProductsQueryResponse> => {
     const startTime = new Date();
     const orderQuery = this.db
       .select({

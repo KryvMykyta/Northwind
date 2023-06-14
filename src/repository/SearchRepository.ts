@@ -1,10 +1,10 @@
 import { RepositoryBase } from "./RepositoryBase";
-
 import { customers, products } from "../schemas/pgSchema";
 import { ilike } from "drizzle-orm/expressions";
+import { SearchCustomerQueryResponse, SearchProductQueryResponse } from "./../types/types";
 
 export class SearchRepository extends RepositoryBase {
-  public searchCustomers = async (keyword: string) => {
+  public searchCustomers = async (keyword: string) : Promise<SearchCustomerQueryResponse> => {
     const startTime = new Date();
     const foundCustomers = this.db
       .select({
@@ -37,7 +37,7 @@ export class SearchRepository extends RepositoryBase {
     };
   };
 
-  public searchProducts = async (keyword: string) => {
+  public searchProducts = async (keyword: string) : Promise<SearchProductQueryResponse> => {
     const startTime = new Date();
     const foundProducts = this.db
       .select({

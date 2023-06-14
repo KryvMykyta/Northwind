@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { Pool } from "pg";
-import { pagesController } from "./../controllers/pagesController";
+import { PagesController } from "./../controllers/pagesController";
 
 export class PagesRouter {
   router: Router;
   path: string;
-  controller: pagesController;
+  controller: PagesController;
 
   constructor(path: string, pool: Pool) {
     (this.router = Router()), (this.path = path);
-    this.controller = new pagesController(pool);
+    this.controller = new PagesController(pool);
     this.router.get("/products/:page", this.controller.getProducts);
     this.router.get("/customers/:page", this.controller.getCustomers);
     this.router.get("/orders/:page", this.controller.getOrders);

@@ -1,5 +1,4 @@
 import { RepositoryBase } from "./RepositoryBase";
-
 import {
   customers,
   employees,
@@ -7,12 +6,18 @@ import {
   orders,
   products,
   supplies,
-} from "../schemas/pgSchema";
+} from "./../schemas/pgSchema";
 import { sql } from "drizzle-orm/sql";
 import { eq, asc, and, gte, lt } from "drizzle-orm/expressions";
+import { sqlRecord, OrderPageQueryResponse, EmployeePageQueryResponse, SupplierPageQueryResponse, ProductPageQueryResponse, CustomerPageQueryResponse } from "./../types/types";
 
 export class PageRepository extends RepositoryBase {
-  public getFirstOrderId = async () => {
+  public getFirstOrderId = async (): Promise<{
+    data: {
+      first: number;
+    }[];
+    sqlQueries: sqlRecord[];
+  }> => {
     const startTime = new Date();
     const totalQuery = this.db
       .select({ first: orders.orderID })
@@ -37,7 +42,7 @@ export class PageRepository extends RepositoryBase {
       ],
     };
   };
-  public customersPage = async (page: number) => {
+  public customersPage = async (page: number) : Promise<CustomerPageQueryResponse> => {
     const startTime = new Date();
     const customersQuery = this.db
       .select({
@@ -73,7 +78,7 @@ export class PageRepository extends RepositoryBase {
     };
   };
 
-  public productsPage = async (page: number) => {
+  public productsPage = async (page: number) : Promise<ProductPageQueryResponse> => {
     const startTime = new Date();
     const productsQuery = this.db
       .select({
@@ -109,7 +114,7 @@ export class PageRepository extends RepositoryBase {
     };
   };
 
-  public suppliersPage = async (page: number) => {
+  public suppliersPage = async (page: number) : Promise<SupplierPageQueryResponse> => {
     const startTime = new Date();
     const suppliesQuery = this.db
       .select({
@@ -145,7 +150,7 @@ export class PageRepository extends RepositoryBase {
     };
   };
 
-  public employeesPage = async (page: number) => {
+  public employeesPage = async (page: number) : Promise<EmployeePageQueryResponse> => {
     const startTime = new Date();
     const employeesQuery = this.db
       .select({
@@ -183,7 +188,7 @@ export class PageRepository extends RepositoryBase {
     };
   };
 
-  public ordersPage = async (first: number, page: number) => {
+  public ordersPage = async (first: number, page: number) : Promise<OrderPageQueryResponse> => {
     const startTime = new Date();
     const ordersQuery = this.db
       .select({

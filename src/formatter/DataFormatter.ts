@@ -1,18 +1,19 @@
 import { RepositoryBase } from "./../repository/RepositoryBase";
 import {
-  CustomerInfo,
-  CustomerInfoAvatar,
-  EmployeeInfo,
-  EmployeeInfoAvatar,
+  CustomerPageItem,
+  CustomerPageItemAvatar,
+  EmployeePageItem,
+  EmployeePageItemAvatar,
   OrderInfoQuery,
-  OrderPageResponse,
+  OrderPageQueryResponse,
   OrderItemResponse,
   OrderProductsQuery,
-  SupplierInfo,
-  SupplierInfoAvatar,
+  SupplierPageItem,
+  SupplierPageItemAvatar,
   sqlRecord,
   tables,
 } from "./../types/types";
+
 export class DataFormatter {
   repository: RepositoryBase;
   constructor(db: RepositoryBase) {
@@ -47,8 +48,8 @@ export class DataFormatter {
     return avatarLink;
   }
 
-  public addAvatarCustomer = (customerInfoList: CustomerInfo[]) => {
-    const newCustomerList: CustomerInfoAvatar[] = [];
+  public addAvatarCustomer = (customerInfoList: CustomerPageItem[]) => {
+    const newCustomerList: CustomerPageItemAvatar[] = [];
     customerInfoList.map((customerInfo) => {
       const avatarLink = this.addAvatarLink(customerInfo.name);
       newCustomerList.push(Object.assign(customerInfo, { avatarLink }));
@@ -56,8 +57,8 @@ export class DataFormatter {
     return newCustomerList;
   };
 
-  public addAvatarSupplier = (supplierInfoList: SupplierInfo[]) => {
-    const newCustomerList: SupplierInfoAvatar[] = [];
+  public addAvatarSupplier = (supplierInfoList: SupplierPageItem[]) => {
+    const newCustomerList: SupplierPageItemAvatar[] = [];
     supplierInfoList.map((supplierInfo) => {
       const avatarLink = this.addAvatarLink(supplierInfo.name);
       newCustomerList.push(Object.assign(supplierInfo, { avatarLink }));
@@ -65,8 +66,8 @@ export class DataFormatter {
     return newCustomerList;
   };
 
-  public addAvatarEmployee = (employeeInfoList: EmployeeInfo[]) => {
-    const newCustomerList: EmployeeInfoAvatar[] = [];
+  public addAvatarEmployee = (employeeInfoList: EmployeePageItem[]) => {
+    const newCustomerList: EmployeePageItemAvatar[] = [];
     employeeInfoList.map((employeeInfo) => {
       const avatarLink = this.addAvatarLink(employeeInfo.name);
       newCustomerList.push(Object.assign(employeeInfo, { avatarLink }));
@@ -87,9 +88,9 @@ export class DataFormatter {
   };
 
   public groupOrderPageResponse = (
-    ordersPage: OrderPageResponse,
+    ordersPage: OrderPageQueryResponse,
     sqlRecord: sqlRecord
-  ): OrderPageResponse => {
+  ): OrderPageQueryResponse => {
     const responseData = {
       data: ordersPage.data,
       sqlQueries: [sqlRecord, ...ordersPage.sqlQueries],

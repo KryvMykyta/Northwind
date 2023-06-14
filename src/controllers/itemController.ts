@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { DataFormatter } from "./../formatter/DataFormatter";
 import { Pool } from "pg";
 import { ItemRepository } from "./../repository/ItemRepository";
-export class itemController {
+export class ItemController {
   repository: ItemRepository;
   formatter: DataFormatter;
 
